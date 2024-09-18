@@ -119,36 +119,58 @@ import java.util.*;
 //    }
 //}
 
+//public class Hashs {
+//
+//    public String solution(String[] participant, String[] completion) {
+//        Map<String, Integer> map = new HashMap<>();
+//
+//        for (int i = 0; i < participant.length; i++) {
+//            map.put(participant[i], map.getOrDefault(participant[i], 0) + 1);
+//        }
+//
+//        for (int i = 0; i < completion.length; i++) {
+//            Integer value = map.get(completion[i]);
+//            if(value != 1) map.put(completion[i], value - 1);
+//            else map.remove(completion[i]);
+//        }
+//
+//        Set<String> keySet = map.keySet();
+//        String result = "";
+//        for (String s : keySet) {
+//            result = s;
+//        }
+//
+//        return result;
+//    }
+//
+//    public static void main(String[] args) {
+//        Hashs hashs = new Hashs();
+//        String[] arr = {"leo", "kiki", "eden"};
+//        String[] arr2 = {"eden", "kiki"};
+//
+//        String solution = hashs.solution(arr, arr2);
+//        System.out.println("solution = " + solution);
+//    }
+//}
+
 public class Hashs {
 
-    public String solution(String[] participant, String[] completion) {
-        Map<String, Integer> map = new HashMap<>();
+    public boolean solution(String[] phone_book) {
+        Arrays.sort(phone_book);
 
-        for (int i = 0; i < participant.length; i++) {
-            map.put(participant[i], map.getOrDefault(participant[i], 0) + 1);
+        for (int i = 0; i < phone_book.length - 1; i++) {
+            if(phone_book[i + 1].startsWith(phone_book[i])){
+                return false;
+            }
         }
-
-        for (int i = 0; i < completion.length; i++) {
-            Integer value = map.get(completion[i]);
-            if(value != 1) map.put(completion[i], value - 1);
-            else map.remove(completion[i]);
-        }
-
-        Set<String> keySet = map.keySet();
-        String result = "";
-        for (String s : keySet) {
-            result = s;
-        }
-
-        return result;
+        return true;
     }
 
     public static void main(String[] args) {
         Hashs hashs = new Hashs();
-        String[] arr = {"leo", "kiki", "eden"};
-        String[] arr2 = {"eden", "kiki"};
+        String[] arr = {"119", "97674223", "1195524421"};
 
-        String solution = hashs.solution(arr, arr2);
+        boolean solution = hashs.solution(arr);
         System.out.println("solution = " + solution);
     }
 }
