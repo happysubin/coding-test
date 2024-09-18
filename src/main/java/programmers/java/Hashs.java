@@ -1,5 +1,7 @@
 package programmers.java;
 
+import baekjoon.Hash;
+
 import java.util.*;
 
 
@@ -94,20 +96,25 @@ public class Hashs {
  */
 
 import java.util.*;
-//폰켓몬
+//폰켓몬 24.9.18
+
 class Hashs {
     public int solution(int[] nums) {
-        int max = nums.length / 2;
-        Set<Integer> hashSet = new HashSet<>();
+        int max = nums.length / 2; // 6이 들어오면 3마리를 남김
 
-        for(int num : nums){
-            hashSet.add(num);
+        Set<Integer> set = new HashSet<>();
+
+        for (int j = 0; j < nums.length; j++) {
+            set.add(nums[j]);
         }
 
-        if(hashSet.size() > max){
-            return max;
-        }
+        if(set.size() > max) return max;
+        else return set.size();
+    }
 
-        return hashSet.size();
+    public static void main(String[] args) {
+        Hashs hashs = new Hashs();
+        int[] arr = {3,1,2,3};
+        hashs.solution(arr);
     }
 }
