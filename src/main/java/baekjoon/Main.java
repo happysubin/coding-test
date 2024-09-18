@@ -141,6 +141,62 @@ package baekjoon;//import java.util.*;
 import java.io.*;
 import java.util.*;
 
-import java.io.*;
-import java.util.*;
+
+class Main {
+
+
+    public static void main(String[] args) throws IOException{
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        String[] arr = br.readLine().split(" ");
+        int start = Integer.parseInt(arr[0]);
+        int end = Integer.parseInt(arr[1]);
+
+        boolean[] visited = new boolean[100001];
+        Queue<Position> queue = new LinkedList<>();
+
+        queue.add(new Position(start, 0));
+        visited[start] = true;
+
+        while(!queue.isEmpty()) {
+            Position poll = queue.poll();
+
+            if(poll.x == end) {
+                bw.write(poll.cnt + "");
+                break;
+            }
+
+            if(poll.x - 1 >= 0 && poll.x - 1 < 100001 && !visited[poll.x - 1]) {
+                visited[poll.x - 1] = true;
+                queue.add(new Position(poll.x - 1, poll.cnt + 1));
+            }
+
+            if(poll.x + 1 >= 0 && poll.x + 1 < 100001 && !visited[poll.x + 1]) {
+                visited[poll.x + 1] = true;
+                queue.add(new Position(poll.x + 1, poll.cnt + 1));
+            }
+
+            if(poll.x * 2 >= 0 && poll.x * 2 < 100001 && !visited[poll.x * 2]) {
+                visited[poll.x * 2] = true;
+                queue.add(new Position(poll.x * 2, poll.cnt + 1));
+            }
+        }
+
+        bw.flush();
+    }
+
+
+
+    static class Position{
+        int x;
+
+        int cnt;
+
+        public Position(int x, int cnt) {
+            this.x = x;
+            this.cnt = cnt;
+        }
+    }
+}
 
