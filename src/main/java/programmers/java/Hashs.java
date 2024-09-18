@@ -98,23 +98,58 @@ public class Hashs {
 import java.util.*;
 //폰켓몬 24.9.18
 
-class Hashs {
-    public int solution(int[] nums) {
-        int max = nums.length / 2; // 6이 들어오면 3마리를 남김
+//class Hashs {
+//    public int solution(int[] nums) {
+//        int max = nums.length / 2; // 6이 들어오면 3마리를 남김
+//
+//        Set<Integer> set = new HashSet<>();
+//
+//        for (int j = 0; j < nums.length; j++) {
+//            set.add(nums[j]);
+//        }
+//
+//        if(set.size() > max) return max;
+//        else return set.size();
+//    }
+//
+//    public static void main(String[] args) {
+//        Hashs hashs = new Hashs();
+//        int[] arr = {3,1,2,3};
+//        hashs.solution(arr);
+//    }
+//}
 
-        Set<Integer> set = new HashSet<>();
+public class Hashs {
 
-        for (int j = 0; j < nums.length; j++) {
-            set.add(nums[j]);
+    public String solution(String[] participant, String[] completion) {
+        Map<String, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < participant.length; i++) {
+            map.put(participant[i], map.getOrDefault(participant[i], 0) + 1);
         }
 
-        if(set.size() > max) return max;
-        else return set.size();
+        for (int i = 0; i < completion.length; i++) {
+            Integer value = map.get(completion[i]);
+            if(value != 1) map.put(completion[i], value - 1);
+            else map.remove(completion[i]);
+        }
+
+        Set<String> keySet = map.keySet();
+        String result = "";
+        for (String s : keySet) {
+            result = s;
+        }
+
+        return result;
     }
 
     public static void main(String[] args) {
         Hashs hashs = new Hashs();
-        int[] arr = {3,1,2,3};
-        hashs.solution(arr);
+        String[] arr = {"leo", "kiki", "eden"};
+        String[] arr2 = {"eden", "kiki"};
+
+        String solution = hashs.solution(arr, arr2);
+        System.out.println("solution = " + solution);
     }
 }
+
