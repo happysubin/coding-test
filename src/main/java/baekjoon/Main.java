@@ -264,9 +264,9 @@ class Main {
         }
 
         bw.write(max + "");
-
-
         bw.flush();
+        bw.close();
+        br.close();
     }
 
     static class Position {
