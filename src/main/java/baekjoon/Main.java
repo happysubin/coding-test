@@ -201,6 +201,86 @@ package baekjoon;//import java.util.*;
 //}
 
 
+//import java.io.*;
+//import java.util.*;
+//
+//
+//class Main {
+//
+//
+//    public static void main(String[] args) throws IOException{
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        int num = Integer.parseInt(br.readLine());
+//        int[][] map = new int[num][num];
+//        for (int i = 0; i < num; i++) {
+//            String[] temp = br.readLine().split(" ");
+//            for (int j = 0; j < num; j++) {
+//                map[i][j] = Integer.parseInt(temp[j]);
+//            }
+//        }
+//
+//        int[] arrX = {-1, 1, 0, 0};
+//        int[] arrY = {0, 0, 1, -1};
+//
+//
+//        int max = Integer.MIN_VALUE;
+//
+//        for (int i = 2; i <= 100; i++) {
+//
+//            boolean[][] visited = new boolean[num][num];
+//
+//            int result = 0;
+//
+//            for (int j = 0; j < num; j++) {
+//                for (int k = 0; k < num; k++) {
+//
+//                    if(map[j][k] <= i || visited[j][k]) continue;
+//
+//                    Queue<Position> queue = new LinkedList<>();
+//                    queue.add(new Position(j, k));
+//                    visited[j][k] = true;
+//
+//                    while(!queue.isEmpty()) {
+//                        Position poll = queue.poll();
+//
+//                        for (int l = 0; l < arrX.length; l++) {
+//                            int x = poll.x + arrX[l];
+//                            int y = poll.y + arrY[l];
+//                            if(x >= 0 && y >= 0 && x < num && y < num &&  map[x][y] > i) { //수위보다 높음
+//                                if(!visited[x][y]) {
+//                                    visited[x][y] = true;
+//                                    queue.add(new Position(x, y));
+//                                }
+//                            }
+//                        }
+//                    }
+//                    result++;
+//                }
+//            }
+//
+//            max = Math.max(max, result);
+//        }
+//
+//        bw.write(max + "");
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    static class Position {
+//        int x;
+//        int y;
+//
+//        public Position(int x, int y) {
+//            this.x = x;
+//            this.y = y;
+//        }
+//    }
+//}
+
+
 import java.io.*;
 import java.util.*;
 
@@ -212,12 +292,15 @@ class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int num = Integer.parseInt(br.readLine());
-        int[][] map = new int[num][num];
-        for (int i = 0; i < num; i++) {
-            String[] temp = br.readLine().split(" ");
-            for (int j = 0; j < num; j++) {
-                map[i][j] = Integer.parseInt(temp[j]);
+        String[] temp = br.readLine().split(" ");
+        int x = Integer.parseInt(temp[0]);
+        int y = Integer.parseInt(temp[1]);
+
+        int[][] map = new int[x][y];
+        for (int i = 0; i < x; i++) {
+            String[] tmp = br.readLine().split(" ");
+            for (int j = 0; j < y; j++) {
+                map[i][j] = Integer.parseInt(tmp[j]);
             }
         }
 
@@ -226,44 +309,48 @@ class Main {
 
 
         int max = Integer.MIN_VALUE;
+        int cnt = 0;
 
-        for (int i = 2; i <= 100; i++) {
+        boolean[][] visited = new boolean[x][y];
+        Queue<Position> queue = new LinkedList<>();
 
-            boolean[][] visited = new boolean[num][num];
 
-            int result = 0;
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
 
-            for (int j = 0; j < num; j++) {
-                for (int k = 0; k < num; k++) {
+                if(visited[i][j] || map[i][j] == 0) continue;
 
-                    if(map[j][k] <= i || visited[j][k]) continue;
+                visited[i][j] = true;
+                queue.add(new Position(i, j));
+                int size = 1;
 
-                    Queue<Position> queue = new LinkedList<>();
-                    queue.add(new Position(j, k));
-                    visited[j][k] = true;
 
-                    while(!queue.isEmpty()) {
-                        Position poll = queue.poll();
+                while(!queue.isEmpty()) {
+                    Position poll = queue.poll();
 
-                        for (int l = 0; l < arrX.length; l++) {
-                            int x = poll.x + arrX[l];
-                            int y = poll.y + arrY[l];
-                            if(x >= 0 && y >= 0 && x < num && y < num &&  map[x][y] > i) { //수위보다 높음
-                                if(!visited[x][y]) {
-                                    visited[x][y] = true;
-                                    queue.add(new Position(x, y));
-                                }
+                    //방문했거나 0이면 색칠 시작 X
+
+                    for (int k = 0; k < 4; k++) {
+                        int px = poll.x + arrX[k];
+                        int py = poll.y + arrY[k];
+
+                        if(px >= 0 && py >= 0 && px < x && py < y && map[px][py] == 1) {
+                            if(!visited[px][py]) {
+                                visited[px][py] = true;
+                                size++;
+                                queue.add(new Position(px, py));
                             }
                         }
                     }
-                    result++;
+                    max = Math.max(max, size);
                 }
+                cnt++;
             }
-
-            max = Math.max(max, result);
         }
 
-        bw.write(max + "");
+        bw.write(cnt + "\n");
+        bw.write(max + "\n");
+
         bw.flush();
         bw.close();
         br.close();
