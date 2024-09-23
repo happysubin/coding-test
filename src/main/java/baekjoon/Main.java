@@ -367,6 +367,100 @@ package baekjoon;//import java.util.*;
 //    }
 //}
 
+//
+//import java.io.*;
+//import java.util.*;
+//
+//
+//class Main {
+//
+//
+//    public static void main(String[] args) throws IOException{
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        String temp = br.readLine();
+//        int num = Integer.parseInt(temp);
+//
+//        String[][] map = new String[num][num];
+//        String[][] wMap = new String[num][num];
+//
+//        for (int i = 0; i < num; i++) {
+//            String[] tmp = br.readLine().split("");
+//            for (int j = 0; j < num; j++) {
+//                map[i][j] = tmp[j];
+//
+//                if(tmp[j].equals("B")) {
+//                    wMap[i][j] = "B";
+//                }
+//                else wMap[i][j] = "R";
+//            }
+//        }
+//
+//        int result = bfs(map);
+//        int wResult = bfs(wMap);
+//
+//        bw.write(result + " " + wResult);
+//        bw.flush();
+//        bw.close();
+//        br.close();
+//    }
+//
+//    private static int bfs(String[][] map) {
+//
+//        int result = 0;
+//        int[] arrX = {-1, 1, 0, 0};
+//        int[] arrY = {0, 0, 1, -1};
+//
+//        boolean[][] visited = new boolean[map.length][map.length];
+//        Queue<Position> queue = new LinkedList<>();
+//
+//        for (int i = 0; i < map.length; i++) {
+//            for (int j = 0; j < map.length; j++) {
+//                if(visited[i][j]) continue;
+//
+//                queue.offer(new Position(i, j, map[i][j]));
+//                visited[i][j] = true;
+//
+//                while(!queue.isEmpty()) {
+//                    Position poll = queue.poll();
+//
+//                    for (int k = 0; k < 4; k++) {
+//                        int x = poll.x + arrX[k];
+//                        int y = poll.y + arrY[k];
+//
+//                        if(x >=0 && y >= 0 && x < map.length && y < map.length) {
+//                            if(!visited[x][y] && poll.value.equals(map[x][y])) {
+//                                visited[x][y] = true;
+//                                queue.add(new Position(x, y, poll.value));
+//                            }
+//                        }
+//
+//                    }
+//                }
+//
+//                result++;
+//
+//            }
+//        }
+//
+//        return result;
+//    }
+//
+//    static class Position {
+//        int x;
+//        int y;
+//        String value;
+//
+//        public Position(int x, int y, String value) {
+//            this.x = x;
+//            this.y = y;
+//            this.value = value;
+//        }
+//    }
+//}
+
+
 
 import java.io.*;
 import java.util.*;
@@ -377,85 +471,88 @@ class Main {
 
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        String temp = br.readLine();
-        int num = Integer.parseInt(temp);
+        String[] temp = br.readLine().split(" ");
 
-        String[][] map = new String[num][num];
-        String[][] wMap = new String[num][num];
+        int x = Integer.parseInt(temp[0]);
+        int y = Integer.parseInt(temp[1]);
 
-        for (int i = 0; i < num; i++) {
+        String[][] map = new String[x][y];
+
+        int wolf = 0;
+        int sheep = 0;
+
+        for (int i = 0; i < x; i++) {
             String[] tmp = br.readLine().split("");
-            for (int j = 0; j < num; j++) {
+            for (int j = 0; j < y; j++) {
                 map[i][j] = tmp[j];
-
-                if(tmp[j].equals("B")) {
-                    wMap[i][j] = "B";
-                }
-                else wMap[i][j] = "R";
+                if(tmp[j].equals("v")) wolf++;
+                else if(tmp[j].equals("o")) sheep++;
             }
         }
 
-        int result = bfs(map);
-        int wResult = bfs(wMap);
+        bfs(map, wolf, sheep);
 
-        bw.write(result + " " + wResult);
-        bw.flush();
-        bw.close();
         br.close();
     }
 
-    private static int bfs(String[][] map) {
+    private static void bfs(String[][] map, int wolf, int sheep) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        int result = 0;
         int[] arrX = {-1, 1, 0, 0};
         int[] arrY = {0, 0, 1, -1};
 
-        boolean[][] visited = new boolean[map.length][map.length];
+        boolean[][] visited = new boolean[map.length][map[0].length];
         Queue<Position> queue = new LinkedList<>();
 
         for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map.length; j++) {
-                if(visited[i][j]) continue;
+            for (int j = 0; j < map[0].length; j++) {
+                if(visited[i][j] || map[i][j].equals("#")) continue;
 
-                queue.offer(new Position(i, j, map[i][j]));
+                queue.offer(new Position(i, j));
                 visited[i][j] = true;
+
+                int wolfCnt = 0;
+                int sheepCnt = 0;
 
                 while(!queue.isEmpty()) {
                     Position poll = queue.poll();
+
+                    if(map[poll.x][poll.y].equals("v")) wolfCnt++;
+                    else if(map[poll.x][poll.y].equals("o")) sheepCnt++;
 
                     for (int k = 0; k < 4; k++) {
                         int x = poll.x + arrX[k];
                         int y = poll.y + arrY[k];
 
-                        if(x >=0 && y >= 0 && x < map.length && y < map.length) {
-                            if(!visited[x][y] && poll.value.equals(map[x][y])) {
+                        if(x >= 0 && y >= 0 && x < map.length && y < map[0].length) {
+                            if(!visited[x][y] && !map[x][y].equals("#")) {
                                 visited[x][y] = true;
-                                queue.add(new Position(x, y, poll.value));
+                                queue.add(new Position(x, y));
                             }
                         }
-
                     }
                 }
 
-                result++;
-
+                if(sheepCnt == 0 || wolfCnt == 0);
+                else if(sheepCnt > wolfCnt) wolf -= wolfCnt;
+                else sheep -= sheepCnt;
             }
         }
 
-        return result;
+        bw.write(sheep + " " + wolf);
+
+        bw.flush();
+        bw.close();
     }
 
     static class Position {
         int x;
         int y;
-        String value;
 
-        public Position(int x, int y, String value) {
+        public Position(int x, int y) {
             this.x = x;
             this.y = y;
-            this.value = value;
         }
     }
 }
