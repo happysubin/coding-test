@@ -462,6 +462,112 @@ package baekjoon;//import java.util.*;
 
 
 
+//import java.io.*;
+//import java.util.*;
+//
+//
+//class Main {
+//
+//
+//    public static void main(String[] args) throws IOException{
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//
+//        String[] temp = br.readLine().split(" ");
+//
+//        int x = Integer.parseInt(temp[0]);
+//        int y = Integer.parseInt(temp[1]);
+//
+//        String[][] map = new String[x][y];
+//
+//        int wolf = 0;
+//        int sheep = 0;
+//
+//        for (int i = 0; i < x; i++) {
+//            String[] tmp = br.readLine().split("");
+//            for (int j = 0; j < y; j++) {
+//                map[i][j] = tmp[j];
+//                if(tmp[j].equals("v")) wolf++;
+//                else if(tmp[j].equals("o")) sheep++;
+//            }
+//        }
+//
+//        bfs(map, wolf, sheep);
+//
+//        br.close();
+//    }
+//
+//    private static void bfs(String[][] map, int wolf, int sheep) throws IOException {
+//        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+//
+//        int[] arrX = {-1, 1, 0, 0};
+//        int[] arrY = {0, 0, 1, -1};
+//
+//        boolean[][] visited = new boolean[map.length][map[0].length];
+//        Queue<Position> queue = new LinkedList<>();
+//
+//        for (int i = 0; i < map.length; i++) {
+//            for (int j = 0; j < map[0].length; j++) {
+//                if(visited[i][j] || map[i][j].equals("#")) continue;
+//
+//                queue.offer(new Position(i, j));
+//                visited[i][j] = true;
+//
+//                int wolfCnt = 0;
+//                int sheepCnt = 0;
+//
+//                while(!queue.isEmpty()) {
+//                    Position poll = queue.poll();
+//
+//                    if(map[poll.x][poll.y].equals("v")) wolfCnt++;
+//                    else if(map[poll.x][poll.y].equals("o")) sheepCnt++;
+//
+//                    for (int k = 0; k < 4; k++) {
+//                        int x = poll.x + arrX[k];
+//                        int y = poll.y + arrY[k];
+//
+//                        if(x >= 0 && y >= 0 && x < map.length && y < map[0].length) {
+//                            if(!visited[x][y] && !map[x][y].equals("#")) {
+//                                visited[x][y] = true;
+//                                queue.add(new Position(x, y));
+//
+//                                /**
+//                                 * 큐에 새로운 위치를 넣을 때, 그 위치가 늑대인지 양인지를 확인하고 개수를 증가
+//                                 * 큐에 넣을 때마다 그 위치가 늑대인지 양인지 확인하는데, 이때 문제가 발생할 수 있습니다.
+//                                 * 예를 들어, 어떤 좌표가 여러 번 큐에 추가될 경우, 그 좌표에 있는 늑대나 양의 개수가 중복으로 세어질 수 있습니다.
+//                                 * 또는 이미 큐에 있는 좌표에 대해 늑대나 양의 개수가 업데이트되기 전에 탐색이 끝나는 경우, 정확하게 개수가 반영되지 않을 수 있습니다.
+//                                 *
+//                                 *
+//                                 * if(map[x][y].equals("v")) wolfCnt++;
+//                                 * else if(map[x][y].equals("o")) sheepCnt++;
+//                                 */
+//                            }
+//                        }
+//                    }
+//                }
+//
+//                if(sheepCnt == 0 || wolfCnt == 0);
+//                else if(sheepCnt > wolfCnt) wolf -= wolfCnt;
+//                else sheep -= sheepCnt;
+//            }
+//        }
+//
+//        bw.write(sheep + " " + wolf);
+//
+//        bw.flush();
+//        bw.close();
+//    }
+//
+//    static class Position {
+//        int x;
+//        int y;
+//
+//        public Position(int x, int y) {
+//            this.x = x;
+//            this.y = y;
+//        }
+//    }
+//}
+
 import java.io.*;
 import java.util.*;
 
@@ -479,25 +585,21 @@ class Main {
 
         String[][] map = new String[x][y];
 
-        int wolf = 0;
-        int sheep = 0;
-
         for (int i = 0; i < x; i++) {
             String[] tmp = br.readLine().split("");
             for (int j = 0; j < y; j++) {
                 map[i][j] = tmp[j];
-                if(tmp[j].equals("v")) wolf++;
-                else if(tmp[j].equals("o")) sheep++;
             }
         }
 
-        bfs(map, wolf, sheep);
+        bfs(map);
 
         br.close();
     }
 
-    private static void bfs(String[][] map, int wolf, int sheep) throws IOException {
+    private static void bfs(String[][] map) throws IOException {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        int result = 0;
 
         int[] arrX = {-1, 1, 0, 0};
         int[] arrY = {0, 0, 1, -1};
@@ -505,65 +607,60 @@ class Main {
         boolean[][] visited = new boolean[map.length][map[0].length];
         Queue<Position> queue = new LinkedList<>();
 
-        for (int i = 0; i < map.length; i++) {
-            for (int j = 0; j < map[0].length; j++) {
-                if(visited[i][j] || map[i][j].equals("#")) continue;
+        queue.add(new Position(0, 0, 1, false));
+        visited[0][0] = true;
 
-                queue.offer(new Position(i, j));
-                visited[i][j] = true;
+        while(!queue.isEmpty()) {
 
-                int wolfCnt = 0;
-                int sheepCnt = 0;
+            Position poll = queue.poll();
 
-                while(!queue.isEmpty()) {
-                    Position poll = queue.poll();
+            if(poll.x ==  map.length - 1 && poll.y == map[0].length - 1) {
+                result = Math.max(result, poll.value);
+            }
 
-                    if(map[poll.x][poll.y].equals("v")) wolfCnt++;
-                    else if(map[poll.x][poll.y].equals("o")) sheepCnt++;
+            for (int i = 0; i < 4; i++) {
 
-                    for (int k = 0; k < 4; k++) {
-                        int x = poll.x + arrX[k];
-                        int y = poll.y + arrY[k];
+                int x = poll.x + arrX[i];
+                int y = poll.y + arrY[i];
 
-                        if(x >= 0 && y >= 0 && x < map.length && y < map[0].length) {
-                            if(!visited[x][y] && !map[x][y].equals("#")) {
-                                visited[x][y] = true;
-                                queue.add(new Position(x, y));
+                if(x >= 0 && x < map.length & y >= 0 && y < map[0].length ) {
 
-                                /**
-                                 * 큐에 새로운 위치를 넣을 때, 그 위치가 늑대인지 양인지를 확인하고 개수를 증가
-                                 * 큐에 넣을 때마다 그 위치가 늑대인지 양인지 확인하는데, 이때 문제가 발생할 수 있습니다.
-                                 * 예를 들어, 어떤 좌표가 여러 번 큐에 추가될 경우, 그 좌표에 있는 늑대나 양의 개수가 중복으로 세어질 수 있습니다.
-                                 * 또는 이미 큐에 있는 좌표에 대해 늑대나 양의 개수가 업데이트되기 전에 탐색이 끝나는 경우, 정확하게 개수가 반영되지 않을 수 있습니다.
-                                 *
-                                 *
-                                 * if(map[x][y].equals("v")) wolfCnt++;
-                                 * else if(map[x][y].equals("o")) sheepCnt++;
-                                 */
-                            }
+                    //방문한적이 없음
+                    if(!visited[x][y]) {
+
+                        visited[x][y] = true; //방문함
+                        if(!poll.destroyFlag && map[x][y].equals("1")) { //부순적이 없는데 벽임. 그럼 부숨.
+                            queue.add(new Position(x, y, poll.value + 1, true));
+                        }
+
+                        else if (map[x][y].equals("0")) { //벽이 아니면 그냥 가는데, 기존 꺼를 가져와야함.
+                            queue.add(new Position(x, y, poll.value + 1, poll.destroyFlag));
                         }
                     }
                 }
-
-                if(sheepCnt == 0 || wolfCnt == 0);
-                else if(sheepCnt > wolfCnt) wolf -= wolfCnt;
-                else sheep -= sheepCnt;
             }
         }
 
-        bw.write(sheep + " " + wolf);
+        if(result == 0) bw.write("-1");
+        else bw.write(result + "");
 
         bw.flush();
         bw.close();
     }
 
+
+    //아니면 나는 이미 부순 놈이라고 추가
     static class Position {
         int x;
         int y;
+        int value;
+        boolean destroyFlag; //
 
-        public Position(int x, int y) {
+        public Position(int x, int y, int value, boolean destroyFlag) {
             this.x = x;
             this.y = y;
+            this.value = value;
+            this.destroyFlag = destroyFlag;
         }
     }
 }
