@@ -578,44 +578,50 @@ class Main {
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        String[] temp = br.readLine().split(" ");
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int x = Integer.parseInt(temp[0]);
-        int y = Integer.parseInt(temp[1]);
+        int x = Integer.parseInt(st.nextToken());
+        int y = Integer.parseInt(st.nextToken());
 
-        String[][] map = new String[x][y];
+
+        int[][] map = new int[x][y];
 
         for (int i = 0; i < x; i++) {
-            String[] tmp = br.readLine().split("");
+            char[] charArray = br.readLine().toCharArray();
             for (int j = 0; j < y; j++) {
-                map[i][j] = tmp[j];
+                map[i][j] = Character.getNumericValue(charArray[j]);
             }
         }
 
-        bfs(map);
+        int bfs = bfs(map);
+        System.out.println(bfs);
 
         br.close();
     }
 
-    private static void bfs(String[][] map) throws IOException {
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        int result = 0;
+    private static int bfs(int[][] map) throws IOException {
 
         int[] arrX = {-1, 1, 0, 0};
         int[] arrY = {0, 0, 1, -1};
 
-        boolean[][] visited = new boolean[map.length][map[0].length];
+        /**
+         * 2차원 배열로 사용하면 반례 등장.
+         * 벽을 부숴야 도착지에 도착할 수 있는 경우,
+         * 미리 앞에서 벽을 부순 다음 먼저 지나가서 방문 체크를 한 경우 앞에서 부수지 않고 돌아서온 경우 이미 가야하는 길쪽에 방문체크가 되어있어 움직일 수가 없다.
+         * 벽을 부순경우와 아닌경우 따로 체크를 해줘야함.
+         */
+        boolean[][][] visited = new boolean[map.length][map[0].length][2];
         Queue<Position> queue = new LinkedList<>();
 
         queue.add(new Position(0, 0, 1, false));
-        visited[0][0] = true;
+        visited[0][0][0] = true;  //마지막 차원이 1이면 부순 세계꽌, 0이면 아직 안 부순 세계관
 
         while(!queue.isEmpty()) {
 
             Position poll = queue.poll();
 
             if(poll.x ==  map.length - 1 && poll.y == map[0].length - 1) {
-                result = Math.max(result, poll.value);
+                return poll.value;
             }
 
             for (int i = 0; i < 4; i++) {
@@ -625,27 +631,35 @@ class Main {
 
                 if(x >= 0 && x < map.length & y >= 0 && y < map[0].length ) {
 
-                    //방문한적이 없음
-                    if(!visited[x][y]) {
+                    if(!poll.destroyFlag) { //벽을 부순적이 없음
 
-                        visited[x][y] = true; //방문함
-                        if(!poll.destroyFlag && map[x][y].equals("1")) { //부순적이 없는데 벽임. 그럼 부숨.
+                        //벽이야.
+                        if(map[x][y] == 1) {
+                            visited[x][y][1] = true;
                             queue.add(new Position(x, y, poll.value + 1, true));
                         }
 
-                        else if (map[x][y].equals("0")) { //벽이 아니면 그냥 가는데, 기존 꺼를 가져와야함.
-                            queue.add(new Position(x, y, poll.value + 1, poll.destroyFlag));
+                        //벽이 아니야, 방문한적도 없엉.
+                        if(map[x][y] == 0 && !visited[x][y][0]) {
+                            visited[x][y][0] = true;
+                            queue.add(new Position(x, y, poll.value + 1, false));
+                        }
+                    }
+                    else { //부순적이 있음.
+
+                        //벽이라면 아무것도 못함.
+
+                        //벽이 아니고 방문한적이 없다면 그냥 진행.
+                        if(map[x][y] == 0 && !visited[x][y][1]) {
+                            visited[x][y][1] = true;
+                            queue.add(new Position(x, y, poll.value + 1, true));
                         }
                     }
                 }
             }
         }
 
-        if(result == 0) bw.write("-1");
-        else bw.write(result + "");
-
-        bw.flush();
-        bw.close();
+        return -1;
     }
 
 
