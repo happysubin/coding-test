@@ -698,22 +698,22 @@ class Main {
 
         int[][] map = new int[x][y];
 
-        goal = 0;
+        goal = 0;  // 익어야 하는 토마토 수
 
-        int minus = 0;
-        int plus = 0;
+        int minus = 0;  // 빈 칸의 수
+        int plus = 0;   // 처음에 익어있는 토마토 수
 
         for (int i = 0; i < x; i++) {
             String[] tempArray = br.readLine().split(" ");
             for (int j = 0; j < y; j++) {
                 map[i][j] = Integer.parseInt(tempArray[j]);
-                if(map[i][j] == -1) {
-                    minus++;
+                if (map[i][j] == -1) {
+                    minus++;  // 빈 칸이면 goal에서 제외
+                } else if (map[i][j] == 1) {
+                    plus++;   // 처음에 익어있는 토마토
+                } else {
+                    goal++;   // 익어야 하는 토마토(0인 칸)
                 }
-                else if(map[i][j] == 1) {
-                    plus++;
-                }
-                else goal++;
             }
         }
 
@@ -740,16 +740,16 @@ class Main {
             for (int j = 0; j < map[0].length; j++) {
                 if(map[i][j] == 1) {
                     queue.add(new Position(i, j, 0));
-                    cnt++;
                 }
             }
         }
 
+        int maxDays = 0;
+
         while(!queue.isEmpty()) {
 
             Position poll = queue.poll();
-
-            if(cnt == goal) return poll.day;
+            maxDays = poll.day;  // BFS이므로 마지막에 갱신된 값이 최종 일수
 
             for (int i = 0; i < 4; i++) {
 
@@ -766,7 +766,11 @@ class Main {
             }
         }
 
-        return -1;
+        if (cnt == goal) {
+            return maxDays;  // 걸린 일수 반환
+        } else {
+            return -1;  // 모두 익지 못한 경우
+        }
     }
 
 
