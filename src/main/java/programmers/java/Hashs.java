@@ -1,5 +1,7 @@
 package programmers.java;
 
+import baekjoon.Hash;
+
 import java.util.*;
 
 
@@ -94,20 +96,83 @@ public class Hashs {
  */
 
 import java.util.*;
-//폰켓몬
-class Hashs {
-    public int solution(int[] nums) {
-        int max = nums.length / 2;
-        Set<Integer> hashSet = new HashSet<>();
+//폰켓몬 24.9.18
 
-        for(int num : nums){
-            hashSet.add(num);
-        }
+//class Hashs {
+//    public int solution(int[] nums) {
+//        int max = nums.length / 2; // 6이 들어오면 3마리를 남김
+//
+//        Set<Integer> set = new HashSet<>();
+//
+//        for (int j = 0; j < nums.length; j++) {
+//            set.add(nums[j]);
+//        }
+//
+//        if(set.size() > max) return max;
+//        else return set.size();
+//    }
+//
+//    public static void main(String[] args) {
+//        Hashs hashs = new Hashs();
+//        int[] arr = {3,1,2,3};
+//        hashs.solution(arr);
+//    }
+//}
 
-        if(hashSet.size() > max){
-            return max;
-        }
+//public class Hashs {
+//
+//    public String solution(String[] participant, String[] completion) {
+//        Map<String, Integer> map = new HashMap<>();
+//
+//        for (int i = 0; i < participant.length; i++) {
+//            map.put(participant[i], map.getOrDefault(participant[i], 0) + 1);
+//        }
+//
+//        for (int i = 0; i < completion.length; i++) {
+//            Integer value = map.get(completion[i]);
+//            if(value != 1) map.put(completion[i], value - 1);
+//            else map.remove(completion[i]);
+//        }
+//
+//        Set<String> keySet = map.keySet();
+//        String result = "";
+//        for (String s : keySet) {
+//            result = s;
+//        }
+//
+//        return result;
+//    }
+//
+//    public static void main(String[] args) {
+//        Hashs hashs = new Hashs();
+//        String[] arr = {"leo", "kiki", "eden"};
+//        String[] arr2 = {"eden", "kiki"};
+//
+//        String solution = hashs.solution(arr, arr2);
+//        System.out.println("solution = " + solution);
+//    }
+//}
 
-        return hashSet.size();
-    }
-}
+//public class Hashs {
+//
+//    public boolean solution(String[] phone_book) {
+//        Arrays.sort(phone_book);
+//
+//        for (int i = 0; i < phone_book.length - 1; i++) {
+//            if(phone_book[i + 1].startsWith(phone_book[i])){
+//                return false;
+//            }
+//        }
+//        return true;
+//    }
+//
+//    public static void main(String[] args) {
+//        Hashs hashs = new Hashs();
+//        String[] arr = {"119", "97674223", "1195524421"};
+//
+//        boolean solution = hashs.solution(arr);
+//        System.out.println("solution = " + solution);
+//    }
+//}
+
+
