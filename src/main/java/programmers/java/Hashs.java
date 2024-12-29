@@ -1,6 +1,5 @@
 package programmers.java;
 
-import baekjoon.Hash;
 
 import java.util.*;
 
